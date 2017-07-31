@@ -53,8 +53,6 @@ def test_clf(clf):
     print u'测试集准确率：%.2f%%' % (100 * acc)
     name = str(clf).split('(')[0]
     index = name.find('Classifier')
-    if index != -1:
-        name = name[:index]     # 去掉末尾的Classifier
     if name == 'SVC':
         name = 'SVM'
     return t_train, t_test, 1-acc, name
@@ -85,7 +83,7 @@ if __name__ == "__main__":
         print data_train.data[i]
         print '\n\n'
     vectorizer = TfidfVectorizer(input='content', stop_words='english', max_df=0.5, sublinear_tf=True)
-    x_train = vectorizer.fit_transform(data_train.data)  # x_train是稀疏的，scipy.sparse.csr.csr_matrix
+    x_train = vectorizer.fit_transform(data_train.data)  # x_train是稀疏的
     x_test = vectorizer.transform(data_test.data)
     print u'训练集样本个数：%d，特征个数：%d' % x_train.shape
     print u'停止词:\n',
@@ -93,12 +91,12 @@ if __name__ == "__main__":
     feature_names = np.asarray(vectorizer.get_feature_names())
 
     print u'\n\n===================\n分类器的比较：\n'
-    clfs = (MultinomialNB(),                # 0.87(0.017), 0.002, 90.39%
-            BernoulliNB(),                  # 1.592(0.032), 0.010, 88.54%
-            KNeighborsClassifier(),         # 19.737(0.282), 0.208, 86.03%
-            RidgeClassifier(),              # 25.6(0.512), 0.003, 89.73%
-            RandomForestClassifier(n_estimators=200),   # 59.319(1.977), 0.248, 77.01%
-            SVC()                           # 236.59(5.258), 1.574, 90.10%
+    clfs = (MultinomialNB(),                # 0.87, 90.39%
+            BernoulliNB(),                  # 1.592, 88.54%
+            KNeighborsClassifier(),         # 19.737, 86.03%
+            RidgeClassifier(),              # 25.6, 89.73%
+            RandomForestClassifier(n_estimators=200),   # 59.319, 77.01%
+            SVC()                           # 236.59, 90.10%
             )
     result = []
     for clf in clfs:
@@ -120,9 +118,9 @@ if __name__ == "__main__":
     b2 = ax_t.bar(x+0.25, time_train, width=0.25, color='#FFA0A0')
     b3 = ax_t.bar(x+0.5, time_test, width=0.25, color='#FF8080')
     plt.xticks(x+0.5, names)
-    plt.legend([b1[0], b2[0], b3[0]], (u'错误率', u'训练时间', u'测试时间'), loc='upper left', shadow=True)
-    plt.title(u'新闻组文本数据不同分类器间的比较', fontsize=18)
-    plt.xlabel(u'分类器名称')
+    plt.legend([b1[0], b2[0], b3[0]], ('错误率', u'训练时间', u'测试时间'), loc='upper left', shadow=True)
+    plt.title('新闻组文本数据不同分类器间的比较', fontsize=18)
+    plt.xlabel('分类器名称')
     plt.grid(True)
     plt.tight_layout(2)
     plt.show()
