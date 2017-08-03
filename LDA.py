@@ -16,7 +16,6 @@ def load_stopword():
 
 
 if __name__ == '__main__':
-    t_start = time.time()
     stop_words = load_stopword()
     
     inputfile='datascience.csv'
@@ -31,16 +30,14 @@ if __name__ == '__main__':
     V = len(dictionary)
     print('词的个数：', V)
     corpus = [dictionary.doc2bow(text) for text in data['content_cuted']]
-    t_start = time.time()
     corpus_tfidf = models.TfidfModel(corpus)[corpus]
 
     num_topics = 5
-    t_start = time.time()
     lda = models.LdaModel(corpus_tfidf, num_topics=num_topics, id2word=dictionary,
-                            alpha=0.01, eta=0.01, minimum_probability=0.001,
+                            alpha=0.01, eta=0.01, 
                             chunksize = 100, passes = 1)
 
-    num_show_topic = 5  # 每个文档显示前几个主题
+    num_show_topic = 5 
     print '10个文档的主题分布：'
     doc_topics = lda.get_document_topics(corpus_tfidf)  # 所有文档的主题分布
     idx = np.arange(M)
