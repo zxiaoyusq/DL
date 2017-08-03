@@ -27,7 +27,6 @@ for i in range(0, len(text) - maxlen, step):
     next_chars.append(text[i + maxlen])
 print 'nb sequences:', len(sentences)
 
-#########向量化###########
 
 print 'Vectorization...'
 X = np.zeros((len(sentences), maxlen, len(chars)), dtype=np.bool)
@@ -38,16 +37,8 @@ for i, sentence in enumerate(sentences):
     y[i, char_indices[next_chars[i]]] = 1
 
 
-# build the model: 2 stacked LSTM
 print 'Build model...'
 model = Sequential()
-# model.add(LSTM(len(chars), 512, return_sequences=True))
-#######network#########
-#两层的LSTM，注意在首层中使用input_shape
-#中间的各层都不需要再次计算输入层数，网络自行计算
-#LSTM后不需要像CNN那样接一个激活函数，在LSTM内部存在
-#######################
-
 
 model.add(LSTM(512,return_sequences = True, input_shape=(maxlen,len(chars))))
 model.add(Dropout(0.2))
@@ -56,7 +47,7 @@ model.add(Dropout(0.2))
 model.add(Dense(len(chars)))
 model.add(Activation('softmax'))
 print 'Modelling finishing'
-model.compile(loss='categorical_crossentropy', optimizer='rmsprop')
+model.compile(loss='categorical_crossentropy', optimizer='adam')
 
 # helper function to sample an index from a probability array
 def sample(a, temperature=1.0):
@@ -66,7 +57,6 @@ def sample(a, temperature=1.0):
 
 # train the model, output generated text after each iteration
 for iteration in range(1, 100):
-    print '-' * 50
     print 'Iteration', iteration
     model.fit(X, y, batch_size=128, nb_epoch=1)
 
