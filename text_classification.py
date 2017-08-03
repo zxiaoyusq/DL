@@ -1,5 +1,3 @@
-#!/usr/bin/python
-# -*- coding:utf-8 -*-
 from __future__ import print_function
 import numpy as np
 from sklearn.naive_bayes import MultinomialNB, BernoulliNB
@@ -12,13 +10,11 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn import metrics
 from time import time
-from pprint import pprint
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 
 
 def test_clf(clf):
-    print(u"分类器：", clf)
     alpha_can = np.logspace(-3, 2, 10)
     model = GridSearchCV(clf, param_grid={'alpha': alpha_can}, cv=5)
     m = alpha_can.size
@@ -59,17 +55,10 @@ def test_clf(clf):
 
 
 if __name__ == "__main__":
-    print u'开始下载/加载数据...'
-    t_start = time()
-    # remove = ('headers', 'footers', 'quotes')
     remove = ()
     categories = 'alt.atheism', 'talk.religion.misc', 'comp.graphics', 'sci.space'
-    # categories = None     # 若分类所有类别，请注意内存是否够用
     data_train = fetch_20newsgroups(subset='train', categories=categories, shuffle=True, random_state=0, remove=remove)
     data_test = fetch_20newsgroups(subset='test', categories=categories, shuffle=True, random_state=0, remove=remove)
-    t_end = time()
-    print u'下载/加载数据完成，耗时%.3f秒' % (t_end - t_start)
-    print u'数据类型：', type(data_train)
     print u'训练集包含的文本数目：', len(data_train.data)
     print u'测试集包含的文本数目：', len(data_test.data)
     print u'训练集和测试集使用的%d个类别的名称：' % len(categories)
@@ -82,12 +71,12 @@ if __name__ == "__main__":
         print u'文本%d(属于类别 - %s)：' % (i+1, categories[y_train[i]])
         print data_train.data[i]
         print '\n\n'
-    vectorizer = TfidfVectorizer(input='content', stop_words='english', max_df=0.5, sublinear_tf=True)
-    x_train = vectorizer.fit_transform(data_train.data)  # x_train是稀疏的
+    vectorizer = TfidfVectorizer(input='content', stop_words='english', max_df=0.5)
+    x_train = vectorizer.fit_transform(data_train.data) 
     x_test = vectorizer.transform(data_test.data)
     print u'训练集样本个数：%d，特征个数：%d' % x_train.shape
     print u'停止词:\n',
-    pprint(vectorizer.get_stop_words())
+    print(vectorizer.get_stop_words())
     feature_names = np.asarray(vectorizer.get_feature_names())
 
     print u'\n\n===================\n分类器的比较：\n'
@@ -118,7 +107,7 @@ if __name__ == "__main__":
     b2 = ax_t.bar(x+0.25, time_train, width=0.25, color='#FFA0A0')
     b3 = ax_t.bar(x+0.5, time_test, width=0.25, color='#FF8080')
     plt.xticks(x+0.5, names)
-    plt.legend([b1[0], b2[0], b3[0]], ('错误率', u'训练时间', u'测试时间'), loc='upper left', shadow=True)
+    plt.legend([b1[0], b2[0], b3[0]], ('错误率', '训练时间', '测试时间'), loc='upper left', shadow=True)
     plt.title('新闻组文本数据不同分类器间的比较', fontsize=18)
     plt.xlabel('分类器名称')
     plt.grid(True)
